@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Persistence.Data;
 using Scalar.AspNetCore;
 
 namespace Cinema.API;
@@ -12,6 +14,10 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
+        builder.Services.AddDbContext<CinemaDbContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
 
         #endregion Add services to the container.
 
