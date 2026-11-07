@@ -1,11 +1,13 @@
-﻿namespace Domain.Models
+﻿using Domain.Enums;
+
+namespace Domain.Models
 {
     public class Payment
     {
         public Guid Id { get; set; }
         public decimal Amount { get; set; }
-        public string Status { get; set; } = string.Empty;
-        public DateTime PaidAt { get; set; }
+        public PaymentStatus Status { get; set; }
+        public DateTime? PaidAt { get; set; }
 
         #region Relations
 

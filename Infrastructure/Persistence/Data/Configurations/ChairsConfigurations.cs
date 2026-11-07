@@ -6,7 +6,7 @@
         {
             builder.HasOne(e => e.Hall).WithMany(e => e.Chairs);
             builder.Property(e => e.RowLabel).HasMaxLength(30);
-            builder.HasIndex(e => new { e.RowLabel, e.IndexOrder }).IsUnique();
+            builder.HasIndex(e => new { e.HallId, e.RowLabel, e.IndexOrder }).IsUnique();
             builder.Property(e => e.Type).HasConversion<string>();
         }
     }

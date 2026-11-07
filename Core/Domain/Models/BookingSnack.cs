@@ -7,7 +7,6 @@
 
         #region Relations
 
-        public ICollection<Payment> Payments { get; set; } = [];
         public Guid BookingId { get; set; }
         public Booking Booking { get; set; } = default!;
         public Guid SnacksItemId { get; set; }
