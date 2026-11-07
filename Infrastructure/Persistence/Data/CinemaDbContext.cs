@@ -20,10 +20,10 @@ namespace Persistence.Data
         public DbSet<Hall> Halls { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Show> Shows { get; set; }
-        public DbSet<Payment> Payments;
-        public DbSet<Ticket> Tickets;
-        public DbSet<BookingSnack> BookingSnacks;
-        public DbSet<SnacksItem> SnacksItems;
-        public DbSet<Chair> Chairs;
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<BookingSnack> BookingSnacks { get; set; }
+        public DbSet<SnacksItem> SnacksItems { get; set; }
+        public DbSet<Chair> Chairs { get; set; }
     }
 }

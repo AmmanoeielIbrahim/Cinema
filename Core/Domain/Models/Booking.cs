@@ -12,6 +12,8 @@ namespace Domain.Models
 
         #region Relations
 
+        public Guid ShowId { get; set; }
+        public Show Show { get; set; } = default!;
         public Guid UserId { get; set; }
         public User User { get; set; } = default!;
         public ICollection<Ticket> Tickets { get; set; } = [];
