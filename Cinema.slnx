@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="Share/Share.csproj" Id="3ba734ec-0e3e-408a-8a87-9108d79c9ce4" />
+    <Project Path="src/Cinema.API/Cinema.API.csproj" />
+  </Folder>
+  <Folder Name="/src/core/">
+    <Project Path="Core/Domain/Domain.csproj" Id="e28fb50b-9bce-41e7-be4e-92adfce72757" />
+    <Project Path="Core/Services/Services.csproj" Id="eb223eae-2b94-475a-abe1-56dc7d718b53" />
+    <Project Path="Core/ServicesAbstraction/ServicesAbstraction.csproj" Id="dc2958e7-8160-4edb-ae4e-b032b8a02212" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="Infrastructure/Persistence/Persistence.csproj" Id="a1fd3177-cd55-48a4-9159-08924457893b" />
+    <Project Path="Infrastructure/Presentation/Presentation.csproj" Id="22528b57-1b50-4109-9573-1332b4f007d9" />
+  </Folder>
+</Solution>
