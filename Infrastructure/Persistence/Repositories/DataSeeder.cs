@@ -1,6 +1,7 @@
 ﻿using Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Persistence.Data;
+using Share.Enums;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -74,7 +75,7 @@ namespace Persistence.Repositories
                 Email = "AmmanoeielUser@gmail.com",
                 FirstName = "Ammanoeiel",
                 LastName = "User",
-                Gender = Domain.Enums.Gender.Male,
+                Gender = Gender.Male,
                 PhoneNumber = "01203867609",
                 UserName = "Manuel.User",
             };
@@ -84,7 +85,7 @@ namespace Persistence.Repositories
                 Email = "AmmanoeielAdmin@gmail.com",
                 FirstName = "Ammanoeiel",
                 LastName = "Admin",
-                Gender = Domain.Enums.Gender.Male,
+                Gender = Gender.Male,
                 PhoneNumber = "01203867609",
                 UserName = "Manuel.Admin",
             };

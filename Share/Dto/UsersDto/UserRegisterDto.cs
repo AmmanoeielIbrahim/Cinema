@@ -21,9 +21,9 @@ namespace Share.Dto.UsersDto
         public string FirstName { get; init; } = string.Empty;
         [Required, MaxLength(50)]
         public string UserName { get; init; } = string.Empty;
-        public string LastName { get; init; } = string.Empty;
         [Required]
-        public IFormFile Image { get; init; } = default!;
+        public string LastName { get; init; } = string.Empty;
+        public IFormFile? Image { get; init; } = default!;
         [Required]
         public Gender Gender { get; init; } = default!;
     }

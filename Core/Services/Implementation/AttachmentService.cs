@@ -18,7 +18,13 @@ namespace Services.Implementation
 
         public string Upload(IFormFile file, string folderName)
         {
-            var extention = Path.GetExtension(file.Name);
+            if (file == null || file.Length == 0)
+                throw new InvalidOperationException("File is empty");
+
+            if (file.Length > maxSize)
+                throw new InvalidOperationException($"File size exceeds {maxSize / (1024 * 1024)} MB");
+
+            var extention = Path.GetExtension(file.FileName);
             if (!allowedExtentions.Contains(extention))
             {
                 StringBuilder allowed = new StringBuilder();
@@ -30,10 +36,9 @@ namespace Services.Implementation
                 throw new InvalidOperationException($"Not allwoed {extention}," +
                     $" just allowed one of them {allowed.ToString()}");
             }
-            if (file.Length == 0 || file.Length > maxSize)
-                throw new InvalidOperationException($"Your File size is {file.Length / (1024 * 1024)}M, max Size allwoed is {maxSize / (1024 * 1024)}M");
-
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwrooot", folderName, "_", new Guid().ToString(), extention);
+            string fileName = $"{Guid.NewGuid().ToString()}{extention}";
+            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderName);
+            string filePath = Path.Combine(folderPath, fileName);
 
             using FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate);
             file.CopyTo(stream);

@@ -16,7 +16,7 @@ namespace Services.Implementation
             if (currentuser is null)
                 throw new UnauthenticationException("Password or Emial is Wrong");
 
-            if (await _userManager.CheckPasswordAsync(currentuser, user.Password))
+            if (!await _userManager.CheckPasswordAsync(currentuser, user.Password))
                 throw new UnauthenticationException("Password or Emial is Wrong");
             var token = string.Empty;
             return new(currentuser.UserName ?? "", user.Email, token);
@@ -29,7 +29,15 @@ namespace Services.Implementation
             var userModel = _mapper.Map<User>(user);
             var result = await _userManager.CreateAsync(userModel, user.Password);
             if (!result.Succeeded)
-                throw new AccountExceptions($"Failed to register {user.UserName} : {result.Errors.Select(e => e.Description)}");
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new AccountExceptions($"Failed to register {user.UserName} : {errors}");
+            }
+            if (user.Image is not null)
+            {
+                var path = attachment.Upload(user.Image, "ProfileImages");
+                userModel.PictureUrl = path;
+            }
             await _userManager.AddToRoleAsync(userModel, "User");
             var token = string.Empty;
             return new(user.UserName, user.Email, "");

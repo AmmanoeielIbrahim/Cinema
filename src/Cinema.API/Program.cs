@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 using Persistence.Repositories;
 using Scalar.AspNetCore;
+using Services.Implementation;
+using Services.ProfileMapping;
+using ServicesAbstraction.Interfaces;
 
 namespace Cinema.API;
 
@@ -32,6 +35,10 @@ public class Program
             options.User.RequireUniqueEmail = true;
         }).AddEntityFrameworkStores<CinemaDbContext>()
             .AddDefaultTokenProviders();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddAutoMapper(temp => { }, typeof(AuthenticationProfile).Assembly);
 
         #endregion Add services to the container.
 
