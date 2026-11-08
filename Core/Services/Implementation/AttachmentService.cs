@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using ServicesAbstraction.Interfaces;
-using System.Text;
 
 namespace Services.Implementation
 {

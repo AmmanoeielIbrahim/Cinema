@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Share.Enums;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -24,7 +23,7 @@ namespace Share.Dto.UsersDto
         [Required]
         public string LastName { get; init; } = string.Empty;
         public IFormFile? Image { get; init; } = default!;
-        [Required]
-        public Gender Gender { get; init; } = default!;
+        [Required, MaxLength(30)]
+        public string Gender { get; init; } = default!;
     }
 }
