@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+﻿using Share.Enums;
 
 namespace Domain.Models
 {

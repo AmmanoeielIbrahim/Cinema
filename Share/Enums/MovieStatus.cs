@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums
+﻿namespace Share.Enums
 {
     public enum MovieStatus
     {
