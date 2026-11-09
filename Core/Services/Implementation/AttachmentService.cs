@@ -14,7 +14,7 @@ namespace Services.Implementation
             return true;
         }
 
-        public string Upload(IFormFile file, string folderName)
+        public async Task<string> UploadAsync(IFormFile file, string folderName)
         {
             if (file == null || file.Length == 0)
                 throw new InvalidOperationException("File is empty");
@@ -39,7 +39,7 @@ namespace Services.Implementation
             string filePath = Path.Combine(folderPath, fileName);
 
             using FileStream stream = new FileStream(filePath, FileMode.OpenOrCreate);
-            file.CopyTo(stream);
+            await file.CopyToAsync(stream);
             return filePath;
         }
     }

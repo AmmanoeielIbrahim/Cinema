@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Domain.Interfaces;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace Services.Implementation
 {
     public class AuthenticationService(UserManager<User> _userManager, IMapper _mapper,
-        IAttachmentService attachment, IOptions<JWT> jwt) : IAuthenticationService
+        IAttachmentService attachment, IOptions<JWT> jwt, IRefreshToken _refreshToken) : IAuthenticationService
     {
-        public async Task<UserDto> Login(UserLoginDto user)
+        public async Task<UserTokenDto> Login(UserLoginDto user)
         {
             var currentuser = await _userManager.FindByEmailAsync(user.Email);
             if (currentuser is null)
@@ -22,13 +24,20 @@ namespace Services.Implementation
                 throw new Exception("");
 
             string token = await CreateToken(originUser);
-            return new(currentuser.UserName ?? "", user.Email, token);
+
+            string refreshTokenn = CreateRefreshToken();
+            await _refreshToken.AddAsync(refreshTokenn, currentuser.Id);
+
+            return new(token, refreshTokenn);
         }
 
-        public async Task<UserDto> Register(UserRegisterDto user)
+        public async Task<UserTokenDto> Register(UserRegisterDto user)
         {
             if (user.Password != user.ConfirmedPassword)
                 throw new AccountExceptions("Password not equal Confirmed Password");
+            string? imagePath = null;
+            if (user.Image is not null)
+                imagePath = await attachment.UploadAsync(user.Image, "ProfileImages");
 
             var originUser = _mapper.Map<User>(user);
             var result = await _userManager.CreateAsync(originUser, user.Password);
@@ -37,14 +46,26 @@ namespace Services.Implementation
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new AccountExceptions($"Failed to register {user.UserName} : {errors}");
             }
-            if (user.Image is not null)
-            {
-                var path = attachment.Upload(user.Image, "ProfileImages");
-                originUser.PictureUrl = path;
-            }
             await _userManager.AddToRoleAsync(originUser, "User");
+
+            if (!string.IsNullOrEmpty(imagePath))
+                originUser.PictureUrl = imagePath;
+
             string token = await CreateToken(originUser);
-            return new(user.UserName, user.Email, token);
+            string refreshTokenn = CreateRefreshToken();
+            await _refreshToken.AddAsync(refreshTokenn, originUser.Id);
+            return new(token, refreshTokenn);
+        }
+
+        public async Task<UserTokenDto> LoginWithRefreshToken(string refreshToken)
+        {
+            var refresh = await _refreshToken.GetByTokenAsync(refreshToken);
+            if (refresh is null || refresh.ExpiresOnUtc < DateTime.UtcNow)
+                throw new ApplicationException("The refresh token has expired");
+
+            string token = await CreateToken(refresh.User);
+            await _refreshToken.UpdateAsync(refresh, CreateRefreshToken());
+            return new UserTokenDto(token, refresh.Token);
         }
 
         private async Task<string> CreateToken(User user)
@@ -74,5 +95,8 @@ namespace Services.Implementation
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        private string CreateRefreshToken()
+            => Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
     }
 }

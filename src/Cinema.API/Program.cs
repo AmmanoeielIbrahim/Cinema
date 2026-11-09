@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Data;
+using Persistence.Global;
 using Persistence.Repositories;
 using Scalar.AspNetCore;
 using Services.Implementation;
@@ -17,7 +18,7 @@ namespace Cinema.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         var Services = builder.Services;
@@ -60,19 +61,22 @@ public class Program
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = Configuration.GetRequiredSection("JWT")["Issuer"],
                 ValidAudience = Configuration.GetRequiredSection("JWT")["Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetRequiredSection("JWT")["SecretKey"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetRequiredSection("JWT")["SecretKey"])),
+                ClockSkew = TimeSpan.Zero
             };
         });
+        Services.AddScoped<IRefreshToken, Persistence.Repositories.RefreshToken>();
 
         #endregion Add services to the container.
 
         var app = builder.Build();
         using var scoped = app.Services.CreateScope();
         var objectOfDataSeed = scoped.ServiceProvider.GetRequiredService<IDataSeeder>();
-        objectOfDataSeed.DataSeed();
+        await objectOfDataSeed.DataSeed();
 
         #region Middlewares
 
+        app.UseMiddleware<GlobalExceptionMiddleware>();
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();

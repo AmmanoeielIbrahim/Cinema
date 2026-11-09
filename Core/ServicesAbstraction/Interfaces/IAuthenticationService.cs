@@ -4,8 +4,10 @@ namespace ServicesAbstraction.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<UserDto> Login(UserLoginDto user);
+        Task<UserTokenDto> Login(UserLoginDto user);
 
-        Task<UserDto> Register(UserRegisterDto user);
+        Task<UserTokenDto> Register(UserRegisterDto user);
+
+        Task<UserTokenDto> LoginWithRefreshToken(string refreshToken);
     }
 }

@@ -4,7 +4,7 @@ namespace ServicesAbstraction.Interfaces
 {
     public interface IAttachmentService
     {
-        string Upload(IFormFile file, string folderName);
+        Task<string> UploadAsync(IFormFile file, string folderName);
 
         bool Delete(string path);
     }
